@@ -13,12 +13,18 @@ async function connectPrisma() {
 }
 
 export const GET = async (req: Request, res: NextResponse) => {
-  console.log("Ran");
   try {
     await connectPrisma();
     const users = await prisma.user.findMany();
 
-    return NextResponse.json({ message: "Success", users }, { status: 200 });
+    if (!!users.length) {
+      return NextResponse.json({ message: "Success", users }, { status: 200 });
+    } else {
+      return NextResponse.json(
+        { message: "No users/resource found", users },
+        { status: 404 },
+      );
+    }
   } catch (error) {
     return NextResponse.json({ message: "Success", error }, { status: 500 });
   } finally {

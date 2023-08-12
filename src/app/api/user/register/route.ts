@@ -16,13 +16,14 @@ async function connectPrisma() {
 export const POST = async (req: Request, res: NextResponse) => {
   try {
     // get stuff from req.body
-    const { firstName, lastName, email, role } = await req.json();
+    const { firstName, lastName, email, role, password } = await req.json();
     const resp = await prisma.user.create({
       data: {
         firstName,
         lastName,
         email,
         role,
+        password,
       },
     });
 
@@ -69,7 +70,6 @@ export const DELETE = async (req: Request, res: NextResponse) => {
   await connectPrisma();
   try {
     const id = req.url.split("/user/")[1];
-    // get stuff from req.body
 
     const resp = await prisma.user.delete({
       where: {
