@@ -1,9 +1,10 @@
 "use client";
 
+import useUserContext from "@/app/context/useUserContext";
 import withAuthLayout from "@/components/Layout/hoc/auth";
-import { useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "react-toastify";
-
 const Register = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
@@ -11,6 +12,15 @@ const Register = () => {
   const lastNameRef = useRef<HTMLInputElement | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const router = useRouter();
+
+  const { user, setUser } = useUserContext();
+
+  useEffect(() => {
+    if (user?.email) {
+      router.push("/");
+    }
+  }, [router, user.email]);
 
   const registerUser = async (e: any) => {
     e.preventDefault();
@@ -36,8 +46,9 @@ const Register = () => {
         });
 
         const {
-          resp: { email },
+          resp: { email, firstName, lastName, role, password },
         } = await data.json();
+        setUser({ email, firstName, lastName, role, password });
         toast.success(` ${email} Successfully registered`);
         setLoading(false);
       }

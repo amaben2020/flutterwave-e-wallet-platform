@@ -1,5 +1,8 @@
+"use client";
+
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import UserContext from "./context/userContext";
 import "./globals.css";
 
 export default function RootLayout({
@@ -15,7 +18,9 @@ export default function RootLayout({
       */}
       <head />
       <ToastContainer position="top-center" />
-      <body>{children}</body>
+      <UserContext>
+        <body>{children}</body>
+      </UserContext>
     </html>
   );
 }
