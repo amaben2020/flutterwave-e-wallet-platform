@@ -43,7 +43,7 @@ const Register = () => {
       }
     } catch (error) {
       if (error instanceof Error) {
-        toast.error(error.stack);
+        toast.error(error.stack?.includes("email") && "Email already in use");
       }
 
       console.log("Error", error);

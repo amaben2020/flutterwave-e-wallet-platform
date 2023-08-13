@@ -15,15 +15,10 @@ async function connectPrisma() {
 
 export const POST = async (req: Request, res: NextResponse) => {
   try {
-    // get stuff from req.body
-    const { firstName, lastName, email, role, password } = await req.json();
-    console.log("email", email);
+    const { email, password } = await req.json();
     const resp = await prisma.user.create({
       data: {
-        firstName,
-        lastName,
         email,
-        role,
         password,
       },
     });
@@ -33,7 +28,7 @@ export const POST = async (req: Request, res: NextResponse) => {
     }
 
     return NextResponse.json(
-      { message: "Something went wrong", resp },
+      { message: "Something went wrong, please check your credentials", resp },
       { status: 400 },
     );
   } catch (error) {
@@ -44,9 +39,10 @@ export const POST = async (req: Request, res: NextResponse) => {
   }
 };
 
+// forgot password
 export const PUT = async (req: Request, res: NextResponse) => {
   await connectPrisma();
-  const id = req.url.split("/user/")[1]; // get the id from the url i.e https://localhost/user/${id}
+  const id = req.url.split("/user/")[1];
   try {
     // get stuff from req.body
     const { firstName, lastName, email, role } = await req.json();

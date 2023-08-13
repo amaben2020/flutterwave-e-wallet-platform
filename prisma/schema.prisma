@@ -35,12 +35,12 @@ enum PaymentGateway {
 }
 
 model User {
-  firstName         String
-  lastName          String
+  firstName         String?
+  lastName          String?
   email             String             @unique
   password          String            
   id                String             @id @default(auto()) @map("_id") @db.ObjectId
-  role              Role               @default(USER)
+  role              Role?               @default(USER)
   wallet            Wallet?
   walletTransaction WalletTransaction?
 }
