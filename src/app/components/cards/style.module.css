@@ -1,0 +1,48 @@
+.card {
+  width: 239px;
+  height: 211px;
+  flex-shrink: 0;
+  background: #fff;
+  padding: 25px;
+  display: flex;
+  gap: 20px;
+  flex-direction: column;
+}
+
+.card[data-active="true"] {
+  background: #292929;
+}
+
+.description {
+  color: #2c2c2cb2;
+}
+
+.description[data-active="true"] {
+  color: rgba(255, 255, 255, 0.7);
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: DM Sans;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%; /* 25.2px */
+}
+
+.iconWrapper {
+  background-color: #3a552c;
+  padding: 20px;
+  border-radius: 100%;
+}
+
+.amount[data-active="true"] {
+  color: #fff;
+  font-feature-settings: "clig" off, "liga" off;
+  font-family: DM Sans;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 700;
+  line-height: 140%; /* 44.8px */
+}
+
+.amount {
+  color: #292929;
+}

@@ -4,6 +4,7 @@ import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserContext from "./context/userContext";
 import "./globals.css";
+import { Roboto_Condensed, Inter, Ubuntu_Mono } from "next/font/google";
 
 export default function RootLayout({
   children,
