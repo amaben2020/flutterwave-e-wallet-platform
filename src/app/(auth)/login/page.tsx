@@ -1,25 +1,38 @@
 "use client";
 
 import withAuthLayout from "@/components/Layout/hoc/auth";
+import axios from "axios";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useRef } from "react";
+import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
 const Login = () => {
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
-  const registerUser = async (e: any) => {
+  const router = useRouter();
+
+  const [cookie, setCookie] = useCookies(["user"]);
+
+  const loginUser = async (e: any) => {
     e.preventDefault();
     try {
       if (emailRef.current && passwordRef.current) {
-        await fetch("http://localhost:3000/api/user/login", {
-          method: "POST",
-          body: JSON.stringify({
+        const { data } = await axios.post(
+          "http://localhost:3000/api/user/login",
+          {
             email: emailRef?.current?.value,
             password: passwordRef?.current?.value,
-          }),
+          },
+        );
+        setCookie("user", JSON.stringify(data), {
+          path: "/",
+          maxAge: 3600, // Expires after 1hr
+          sameSite: true,
         });
-        toast.success("Successfully registered");
+        toast.success("Successfully logged in");
+        router.push("/");
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -32,7 +45,7 @@ const Login = () => {
 
   return (
     <>
-      <form onSubmit={registerUser}>
+      <form onSubmit={loginUser}>
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Your email

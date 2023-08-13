@@ -16,19 +16,26 @@ async function connectPrisma() {
 export const POST = async (req: Request, res: NextResponse) => {
   try {
     const { email, password } = await req.json();
-    const resp = await prisma.user.create({
-      data: {
+
+    // find the user and check if the email and password are same with db
+    const user = await prisma.user.findFirst({
+      where: {
         email,
         password,
       },
     });
 
-    if (resp.email) {
-      return NextResponse.json({ message: "Success", resp }, { status: 200 });
+    if (user?.firstName && user.password === password && user.email === email) {
+      if (user.email) {
+        return NextResponse.json(
+          { message: "Successful login ✅", user },
+          { status: 200 },
+        );
+      }
     }
 
     return NextResponse.json(
-      { message: "Something went wrong, please check your credentials", resp },
+      { message: "Something went wrong, please check your credentials" },
       { status: 400 },
     );
   } catch (error) {

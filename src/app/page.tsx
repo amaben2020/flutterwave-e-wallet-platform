@@ -1,5 +1,6 @@
 "use client";
 import { Inter } from "@next/font/google";
+import { useState } from "react";
 import Card from "./components/cards";
 import Navbar from "./components/navbar";
 import Sidebar from "./components/sidebar";
@@ -10,6 +11,11 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { user, setUser } = useUserContext();
+  const [isActive, setIsActive] = useState(true);
+
+  const handleIsActiveCard = () => {
+    setIsActive((p) => !p);
+  };
   return (
     <div className="flex">
       <div>
@@ -19,8 +25,10 @@ export default function Home() {
         <Navbar />
 
         <div className="p-10">
-          <div className="flex gap-10 my-6">
-            <Card />
+          <div className="flex gap-6 my-6">
+            <Card isActive />
+            <Card isActive={false} />
+            <Card isActive={false} />
           </div>
           <div>Chart</div>
           <div>Transaction</div>

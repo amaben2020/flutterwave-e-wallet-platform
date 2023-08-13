@@ -1,7 +1,5 @@
-import { useState } from "react";
 import styles from "./style.module.css";
-const Card = () => {
-  const [isActive, setIsActive] = useState(true);
+const Card = ({ isActive }: { isActive: boolean }) => {
   return (
     <div className={styles.card} data-active={isActive}>
       <div className="flex justify-between">
