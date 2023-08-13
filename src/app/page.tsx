@@ -1,6 +1,7 @@
 "use client";
 import { Inter } from "@next/font/google";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import Card from "./components/cards";
 import Navbar from "./components/navbar";
 import Sidebar from "./components/sidebar";
@@ -13,9 +14,19 @@ export default function Home() {
   const { user, setUser } = useUserContext();
   const [isActive, setIsActive] = useState(true);
 
-  const handleIsActiveCard = () => {
-    setIsActive((p) => !p);
-  };
+  const handleIsActiveCard = () =>
+    setIsActive((previousState) => !previousState);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user.user?.email && user.user?.firstName) {
+      console.log("yeah");
+    } else {
+      router.push("/login");
+    }
+  }, [router, user.user?.email, user.user?.firstName]);
+
   return (
     <div className="flex">
       <div>
@@ -26,17 +37,13 @@ export default function Home() {
 
         <div className="p-10">
           <div className="flex gap-6 my-6">
-            <Card isActive />
-            <Card isActive={false} />
-            <Card isActive={false} />
+            <Card handleClick={handleIsActiveCard} isActive={isActive} />
+            <Card handleClick={handleIsActiveCard} isActive={false} />
+            <Card handleClick={handleIsActiveCard} isActive={false} />
           </div>
           <div>Chart</div>
           <div>Transaction</div>
-          {user.email}
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur
-          assumenda alias minima ipsa, quaerat voluptatem eveniet optio. Ut eum
-          dolor et cumque excepturi adipisci. Dolore quibusdam perspiciatis
-          nihil eligendi cupiditate.
+          {user.user?.email}
         </div>
       </main>
     </div>

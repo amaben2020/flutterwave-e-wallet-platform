@@ -17,15 +17,20 @@ export const POST = async (req: Request, res: NextResponse) => {
   try {
     const { email, password } = await req.json();
 
-    // find the user and check if the email and password are same with db
-    const user = await prisma.user.findFirst({
+    const user = await prisma?.user.findFirst({
       where: {
         email,
         password,
       },
     });
 
-    if (user?.firstName && user.password === password && user.email === email) {
+    console.log("User", user);
+
+    if (
+      user?.firstName &&
+      user?.password === password &&
+      user?.email === email
+    ) {
       if (user.email) {
         return NextResponse.json(
           { message: "Successful login ✅", user },
@@ -39,7 +44,7 @@ export const POST = async (req: Request, res: NextResponse) => {
       { status: 400 },
     );
   } catch (error) {
-    return NextResponse.json({ message: "Success", error }, { status: 500 });
+    return NextResponse.json({ message: "Error ❌", error }, { status: 500 });
   } finally {
     // disconnect when all is said and done
     await prisma.$disconnect();

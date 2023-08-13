@@ -1,7 +1,13 @@
 import styles from "./style.module.css";
-const Card = ({ isActive }: { isActive: boolean }) => {
+const Card = ({
+  isActive,
+  handleClick,
+}: {
+  isActive: boolean;
+  handleClick: () => void;
+}) => {
   return (
-    <div className={styles.card} data-active={isActive}>
+    <div className={styles.card} data-active={isActive} onClick={handleClick}>
       <div className="flex justify-between">
         <div className={styles.iconWrapper}>
           <svg
