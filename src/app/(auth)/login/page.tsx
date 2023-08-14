@@ -18,14 +18,15 @@ const Login = () => {
 
   const [cookie, setCookie] = useCookies(["user"]);
 
-  console.log("APP URL", process.env.NEXT_PUBLIC_VERCEL_URL);
+  console.log("VERCEL URL", process.env.NEXT_PUBLIC_VERCEL_URL);
+  console.log("custom APP URL", process.env.NEXT_PUBLIC_APP_URL);
 
   const loginUser = async (e: any) => {
     e.preventDefault();
     try {
       if (emailRef.current && passwordRef.current) {
         const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/user/login`,
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/user/login`,
           {
             email: emailRef?.current?.value,
             password: passwordRef?.current?.value,
