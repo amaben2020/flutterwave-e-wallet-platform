@@ -6,7 +6,13 @@ import { PrismaClient } from "@prisma/client";
 import { createWalletTransaction } from "../helpers/createWalletTransaction";
 import { validateAndCreateWallet } from "../helpers/validateAndCreateWallet";
 
-const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 async function connectPrisma() {
   try {
