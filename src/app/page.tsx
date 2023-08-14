@@ -4,6 +4,7 @@ import axios from "axios";
 import { closePaymentModal, useFlutterwave } from "flutterwave-react-v3";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
+import { toast } from "react-toastify";
 import Card from "./components/cards";
 import Navbar from "./components/navbar";
 import Sidebar from "./components/sidebar";
@@ -15,10 +16,6 @@ export default function Home() {
   const { user, setUser } = useUserContext();
   const [isActive, setIsActive] = useState(true);
 
-  // const {
-  //   user: { email },
-  // } = user;
-
   const config = {
     public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY ?? "",
     tx_ref: String(Date.now()),
@@ -26,9 +23,9 @@ export default function Home() {
     currency: "NGN",
     payment_options: "card,mobilemoney,ussd",
     customer: {
-      email: "user@gmail.com",
+      email: user?.user.email,
       phone_number: "070********",
-      name: "john doe",
+      name: `${user?.user.firstName} ${user?.user.lastName}`,
     },
     customizations: {
       title: "my Payment Title",
@@ -59,6 +56,9 @@ export default function Home() {
         response,
       );
       console.log("Wallet", wallet);
+      if (wallet.data.status === 200 && wallet.data.wallet) {
+        toast.success(wallet.data.message);
+      }
     } catch (error) {
       console.log(error);
     }

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 
 import { PrismaClient } from "@prisma/client";
+import { createWalletTransaction } from "../helpers/createWalletTransaction";
+import { validateAndCreateWallet } from "../helpers/validateAndCreateWallet";
 
 const prisma = new PrismaClient();
 
@@ -32,16 +34,52 @@ export const POST = async (req: Request, res: NextResponse) => {
   };
 
   try {
+    // get the user id by email
+
     const data = await req.json();
-
-    console.log("DATA LOGGED", data);
-
-    const wallet = await prisma?.wallet.create({
-      data: {
-        balance: sampleResp.amount,
-        userId: "64d7ed2dcc778405c8549fbf",
+    const getUserId = await prisma.user.findFirst({
+      where: {
+        email: data.customer?.email,
       },
     });
+
+    console.log("getUserId", getUserId);
+
+    // console.log("DATA LOGGED", data);
+    // console.log({
+    //   status: "successful",
+    //   customer: { name: "john doe", email: "user@gmail.com" },
+    //   transaction_id: 4526238,
+    //   tx_ref: "1691962541027",
+    //   flw_ref: "FLW-MOCK-c70245a5a419708cd6a642a057a4fd2b",
+    //   currency: "NGN",
+    //   amount: 100,
+    //   charged_amount: 100,
+    //   charge_response_code: "00",
+    //   charge_response_message: "Approved. Successful",
+    //   created_at: "2023-08-13T21:36:14.000Z",
+    // });
+
+    // const wallet = await prisma?.wallet.create({
+    //   data: {
+    //     balance: sampleResp.amount,
+    //     userId: "64d7ed2dcc778405c8549fbf",
+    //   },
+    // });
+
+    const wallet = await validateAndCreateWallet(getUserId?.id ?? "", {
+      amount: sampleResp.amount,
+    });
+
+    console.log("wallet", wallet);
+
+    await createWalletTransaction(
+      getUserId?.id,
+      data?.amount,
+      data.charge_response_message.includes("Successful"),
+      data.flw_ref && "flutterwave",
+      data.currency,
+    );
 
     return NextResponse.json(
       { message: "Wallet created ✅", wallet },
