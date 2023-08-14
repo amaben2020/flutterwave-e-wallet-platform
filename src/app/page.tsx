@@ -17,6 +17,8 @@ export default function Home() {
   const [balance, setBalance] = useState(0);
   const [isActive, setIsActive] = useState(true);
 
+  console.log(user);
+
   const config = {
     public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY ?? "",
     tx_ref: String(Date.now()),
@@ -53,7 +55,7 @@ export default function Home() {
   const handleResponse = async (response: any) => {
     try {
       const wallet = await axios.post(
-        "http://localhost:3000/api/payment/response",
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/response`,
         response,
       );
       console.log("Wallet", wallet);
@@ -68,7 +70,7 @@ export default function Home() {
   const handleBalanceFetch = useCallback(async () => {
     try {
       const data = await axios.get(
-        `http://localhost:3000/api/payment/wallet?userId=${user?.user?.id}`,
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/wallet?userId=${user?.user?.id}`,
       );
       console.log("Balance", data.data);
       setBalance(data.data.wallet.balance);
