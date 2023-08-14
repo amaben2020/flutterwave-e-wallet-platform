@@ -18,6 +18,8 @@ const Login = () => {
 
   const [cookie, setCookie] = useCookies(["user"]);
 
+  console.log("APP URL", process.env.NEXT_PUBLIC_VERCEL_URL);
+
   const loginUser = async (e: any) => {
     e.preventDefault();
     try {
