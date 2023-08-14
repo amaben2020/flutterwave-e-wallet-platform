@@ -1,91 +1,133 @@
-import Image from 'next/image'
-import { Inter } from '@next/font/google'
-import styles from './page.module.css'
-
-const inter = Inter({ subsets: ['latin'] })
+"use client";
+import { Inter } from "@next/font/google";
+import axios from "axios";
+import { closePaymentModal, useFlutterwave } from "flutterwave-react-v3";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { toast } from "react-toastify";
+import Card from "./components/cards";
+import Navbar from "./components/navbar";
+import Sidebar from "./components/sidebar";
+import useUserContext from "./context/useUserContext";
+import styles from "./page.module.css";
+const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
+  const { user, setUser } = useUserContext();
+  const [balance, setBalance] = useState(0);
+  const [isActive, setIsActive] = useState(true);
+
+  const config = {
+    public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY ?? "",
+    tx_ref: String(Date.now()),
+    amount: 1000,
+    currency: "NGN",
+    payment_options: "card,mobilemoney,ussd",
+    customer: {
+      email: user?.user?.email,
+      phone_number: "070********",
+      name: `${user?.user?.firstName} ${user?.user?.lastName}`,
+    },
+    customizations: {
+      title: "my Payment Title",
+      description: "Payment for items in cart",
+      logo: "https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg",
+    },
+  };
+
+  const handleFlutterPayment = useFlutterwave(config);
+
+  const handleIsActiveCard = () =>
+    setIsActive((previousState) => !previousState);
+
+  const router = useRouter();
+
+  useEffect(() => {
+    if (user.user?.email && user.user?.firstName) {
+      console.log("yeah");
+    } else {
+      router.push("/login");
+    }
+  }, [router, user.user?.email, user.user?.firstName]);
+
+  const handleResponse = async (response: any) => {
+    try {
+      const wallet = await axios.post(
+        "http://localhost:3000/api/payment/response",
+        response,
+      );
+      console.log("Wallet", wallet);
+      if (wallet.data.status === 200 && wallet.data.wallet) {
+        toast.success(wallet.data.message);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleBalanceFetch = useCallback(async () => {
+    try {
+      const data = await axios.get(
+        `http://localhost:3000/api/payment/wallet?userId=${user?.user?.id}`,
+      );
+      console.log("Balance", data.data);
+      setBalance(data.data.wallet.balance);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }, [user?.user?.id]);
+
+  useEffect(() => {
+    handleBalanceFetch();
+  }, [handleBalanceFetch]);
+
   return (
-    <main className={styles.main}>
-      <div className={styles.description}>
-        <p>
-          Get started by editing&nbsp;
-          <code className={styles.code}>src/app/page.tsx</code>
-        </p>
-        <div>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            By{' '}
-            <Image
-              src="/vercel.svg"
-              alt="Vercel Logo"
-              className={styles.vercelLogo}
-              width={100}
-              height={24}
-              priority
+    <div className="flex">
+      <div>
+        <Sidebar />
+      </div>
+      <main className={styles.main}>
+        <Navbar />
+
+        <div className="p-10">
+          <div className="flex gap-6 my-6">
+            <Card
+              handleClick={handleIsActiveCard}
+              balance={balance}
+              isActive={isActive}
             />
-          </a>
+            <Card
+              balance={balance}
+              handleClick={handleIsActiveCard}
+              isActive={false}
+            />
+            <Card
+              balance={balance}
+              handleClick={handleIsActiveCard}
+              isActive={false}
+            />
+          </div>
+          <div>Chart</div>
+          <div>Transaction</div>
+          {user.user?.email}
+
+          <button
+            className="p-3 mx-10 text-white bg-green-600 border"
+            onClick={() => {
+              handleFlutterPayment({
+                callback: async (response) => {
+                  console.log(response);
+                  await handleResponse(response);
+                  closePaymentModal();
+                },
+                onClose: () => {},
+              });
+            }}
+          >
+            Payment with React hooks
+          </button>
         </div>
-      </div>
-
-      <div className={styles.center}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js Logo"
-          width={180}
-          height={37}
-          priority
-        />
-        <div className={styles.thirteen}>
-          <Image src="/thirteen.svg" alt="13" width={40} height={31} priority />
-        </div>
-      </div>
-
-      <div className={styles.grid}>
-        <a
-          href="https://beta.nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Docs <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Find in-depth information about Next.js features and API.
-          </p>
-        </a>
-
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Templates <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>Explore the Next.js 13 playground.</p>
-        </a>
-
-        <a
-          href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          className={styles.card}
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <h2 className={inter.className}>
-            Deploy <span>-&gt;</span>
-          </h2>
-          <p className={inter.className}>
-            Instantly deploy your Next.js site to a shareable URL with Vercel.
-          </p>
-        </a>
-      </div>
-    </main>
-  )
+      </main>
+    </div>
+  );
 }
