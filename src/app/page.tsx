@@ -24,7 +24,7 @@ export default function Home() {
     currency: "NGN",
     payment_options: "card,mobilemoney,ussd",
     customer: {
-      email: user?.user?.email,
+      email: user?.user?.email || "",
       phone_number: "070********",
       name: `${user?.user?.firstName} ${user?.user?.lastName}`,
     },
