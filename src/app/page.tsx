@@ -55,7 +55,7 @@ export default function Home() {
   const handleResponse = async (response: any) => {
     try {
       const wallet = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/response`,
+        `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/payment/response`,
         response,
       );
       console.log("Wallet", wallet);
@@ -70,7 +70,7 @@ export default function Home() {
   const handleBalanceFetch = useCallback(async () => {
     try {
       const data = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/wallet?userId=${user?.user?.id}`,
+        `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/payment/wallet?userId=${user?.user?.id}`,
       );
       console.log("Balance", data.data);
       setBalance(data.data.wallet.balance);
