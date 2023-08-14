@@ -3,7 +3,7 @@ import { Inter } from "@next/font/google";
 import axios from "axios";
 import { closePaymentModal, useFlutterwave } from "flutterwave-react-v3";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Card from "./components/cards";
 import Navbar from "./components/navbar";
@@ -14,18 +14,19 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { user, setUser } = useUserContext();
+  const [balance, setBalance] = useState(0);
   const [isActive, setIsActive] = useState(true);
 
   const config = {
     public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY ?? "",
     tx_ref: String(Date.now()),
-    amount: 100,
+    amount: 1000,
     currency: "NGN",
     payment_options: "card,mobilemoney,ussd",
     customer: {
-      email: user?.user.email,
+      email: user?.user?.email,
       phone_number: "070********",
-      name: `${user?.user.firstName} ${user?.user.lastName}`,
+      name: `${user?.user?.firstName} ${user?.user?.lastName}`,
     },
     customizations: {
       title: "my Payment Title",
@@ -64,6 +65,22 @@ export default function Home() {
     }
   };
 
+  const handleBalanceFetch = useCallback(async () => {
+    try {
+      const data = await axios.get(
+        `http://localhost:3000/api/payment/wallet?userId=${user?.user?.id}`,
+      );
+      console.log("Balance", data.data);
+      setBalance(data.data.wallet.balance);
+    } catch (error) {
+      console.log("Error", error);
+    }
+  }, [user?.user?.id]);
+
+  useEffect(() => {
+    handleBalanceFetch();
+  }, [handleBalanceFetch]);
+
   return (
     <div className="flex">
       <div>
@@ -74,9 +91,21 @@ export default function Home() {
 
         <div className="p-10">
           <div className="flex gap-6 my-6">
-            <Card handleClick={handleIsActiveCard} isActive={isActive} />
-            <Card handleClick={handleIsActiveCard} isActive={false} />
-            <Card handleClick={handleIsActiveCard} isActive={false} />
+            <Card
+              handleClick={handleIsActiveCard}
+              balance={balance}
+              isActive={isActive}
+            />
+            <Card
+              balance={balance}
+              handleClick={handleIsActiveCard}
+              isActive={false}
+            />
+            <Card
+              balance={balance}
+              handleClick={handleIsActiveCard}
+              isActive={false}
+            />
           </div>
           <div>Chart</div>
           <div>Transaction</div>

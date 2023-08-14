@@ -2,9 +2,11 @@ import styles from "./style.module.css";
 const Card = ({
   isActive,
   handleClick,
+  balance,
 }: {
   isActive: boolean;
   handleClick: () => void;
+  balance: number;
 }) => {
   return (
     <div className={styles.card} data-active={isActive} onClick={handleClick}>
@@ -56,7 +58,7 @@ const Card = ({
         Total Balance
       </h3>
       <h3 className={styles.amount} data-active={isActive}>
-        $3140.74
+        ₦{Number(balance).toFixed(2) || 0.0}
       </h3>
     </div>
   );
