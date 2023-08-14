@@ -17,8 +17,6 @@ export default function Home() {
   const [balance, setBalance] = useState(0);
   const [isActive, setIsActive] = useState(true);
 
-  console.log(user);
-
   const config = {
     public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY ?? "",
     tx_ref: String(Date.now()),
@@ -46,9 +44,9 @@ export default function Home() {
 
   useEffect(() => {
     if (user.user?.email && user.user?.firstName) {
-      console.log("yeah");
-    } else {
       router.push("/login");
+    } else {
+      router.push("/register");
     }
   }, [router, user.user?.email, user.user?.firstName]);
 
@@ -122,7 +120,9 @@ export default function Home() {
                   await handleResponse(response);
                   closePaymentModal();
                 },
-                onClose: () => {},
+                onClose: () => {
+                  toast.warning("Payment Complete");
+                },
               });
             }}
           >
