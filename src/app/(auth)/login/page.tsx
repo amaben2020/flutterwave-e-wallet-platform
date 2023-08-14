@@ -23,7 +23,7 @@ const Login = () => {
     try {
       if (emailRef.current && passwordRef.current) {
         const { data } = await axios.post(
-          "http://localhost:3000/api/user/login",
+          `${process.env.NEXT_PUBLIC_VERCEL_URL}/api/user/login`,
           {
             email: emailRef?.current?.value,
             password: passwordRef?.current?.value,
