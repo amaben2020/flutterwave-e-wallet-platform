@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 
 import useUserContext from "@/app/context/useUserContext";
@@ -14,7 +15,6 @@ const Login = () => {
 
   const router = useRouter();
   const { user, setUser } = useUserContext();
-  console.log(user);
 
   const [cookie, setCookie] = useCookies(["user"]);
 

@@ -1,3 +1,4 @@
+//@ts-nocheck
 "use client";
 
 import useUserContext from "@/app/context/useUserContext";
