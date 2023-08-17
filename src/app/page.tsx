@@ -38,6 +38,12 @@ export default function Home() {
   }, [user.user?.id]);
 
   useEffect(() => {
+    if (!user.user?.id) {
+      router.push("/login");
+    }
+  }, [user.user?.id, router]);
+
+  useEffect(() => {
     getUserFromDb();
   }, [getUserFromDb]);
   useEffect(() => {
