@@ -13,6 +13,7 @@ async function connectPrisma() {
 }
 
 export const GET = async (req: Request, res: NextResponse) => {
+  console.log("params", req?.params);
   try {
     await connectPrisma();
     const users = await prisma.user.findMany();

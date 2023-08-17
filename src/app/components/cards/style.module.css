@@ -8,6 +8,11 @@
   gap: 20px;
   flex-direction: column;
   cursor: pointer;
+  filter: none;
+}
+
+.card[data-isLoading="true"] {
+  filter: blur(7px);
 }
 
 .card:hover {

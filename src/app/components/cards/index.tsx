@@ -3,13 +3,15 @@ const Card = ({
   isActive,
   handleClick,
   balance,
+  isLoading
 }: {
   isActive: boolean;
   handleClick: () => void;
-  balance: number;
+    balance: number;
+    isLoading: boolean
 }) => {
   return (
-    <div className={styles.card} data-active={isActive} onClick={handleClick}>
+    <div className={styles.card} data-active={isActive} data-isLoading={String(isLoading)} onClick={handleClick}>
       <div className="flex justify-between">
         <div className={styles.iconWrapper}>
           <svg

@@ -14,8 +14,50 @@ const inter = Inter({ subsets: ["latin"] });
 
 export default function Home() {
   const { user, setUser } = useUserContext();
+  const [userInDB, setUserInDB] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [isActive, setIsActive] = useState(true);
+  const router = useRouter();
+  const getUserFromDb = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/user/${user.user?.id}`,
+      );
+
+      setUserInDB(data?.user);
+      setIsLoading(false);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user.user?.id]);
+
+  useEffect(() => {
+    getUserFromDb();
+  }, [getUserFromDb]);
+  useEffect(() => {
+    console.log("userInDB", userInDB);
+    if (user.user?.email && user.user?.firstName && !isLoading) {
+      toast.success(`Welcome ${user.user?.firstName}`);
+    } else if (!isLoading && !user.user?.email && userInDB) {
+      router.push("/login");
+    }
+  }, [router, user.user?.email, user.user?.firstName, userInDB, isLoading]);
+
+  useEffect(() => {
+    if (!userInDB && isLoading) {
+      console.log("LOADING ❌");
+    }
+
+    if (!userInDB && !isLoading) {
+      console.log("PUSH TO REGISTER ✅ ");
+    }
+  }, [userInDB, router, isLoading]);
 
   const config = {
     public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY ?? "",
@@ -40,16 +82,6 @@ export default function Home() {
   const handleIsActiveCard = () =>
     setIsActive((previousState) => !previousState);
 
-  const router = useRouter();
-
-  useEffect(() => {
-    if (user.user?.email && user.user?.firstName) {
-      toast.success(user.user?.firstName);
-    } else {
-      // router.push("/login");
-    }
-  }, [router, user.user?.email, user.user?.firstName]);
-
   const handleResponse = async (response: any) => {
     try {
       const wallet = await axios.post(
@@ -70,7 +102,7 @@ export default function Home() {
       const data = await axios.get(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/wallet?userId=${user?.user?.id}`,
       );
-      console.log("Balance", data.data);
+
       setBalance(data.data.wallet.balance);
     } catch (error) {
       console.log("Error", error);
@@ -95,21 +127,24 @@ export default function Home() {
               handleClick={handleIsActiveCard}
               balance={balance}
               isActive={isActive}
+              isLoading={isLoading}
             />
             <Card
               balance={balance}
               handleClick={handleIsActiveCard}
               isActive={false}
+              isLoading={isLoading}
             />
             <Card
               balance={balance}
               handleClick={handleIsActiveCard}
               isActive={false}
+              isLoading={isLoading}
             />
           </div>
           <div>Chart</div>
           <div>Transaction</div>
-          {user.user?.email}
+          {isLoading ? "LOADING ...." : user.user?.email}
 
           <button
             className="p-3 mx-10 text-white bg-green-600 border"
