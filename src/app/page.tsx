@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import Card from "./components/cards";
+import LottieControl from "./components/loading";
 import Navbar from "./components/navbar";
 import Sidebar from "./components/sidebar";
 import useUserContext from "./context/useUserContext";
@@ -52,6 +53,8 @@ export default function Home() {
   useEffect(() => {
     if (!userInDB && isLoading) {
       console.log("LOADING ❌");
+
+      // use a full page loading spinner
     }
 
     if (!userInDB && !isLoading) {
@@ -144,7 +147,7 @@ export default function Home() {
           </div>
           <div>Chart</div>
           <div>Transaction</div>
-          {isLoading ? "LOADING ...." : user.user?.email}
+          {isLoading ? <LottieControl /> : user.user?.email}
 
           <button
             className="p-3 mx-10 text-white bg-green-600 border"
