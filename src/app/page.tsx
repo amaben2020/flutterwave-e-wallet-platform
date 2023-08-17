@@ -26,7 +26,6 @@ export default function Home() {
       const { data } = await axios.get(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/user/${user.user?.id}`,
       );
-
       setUserInDB(data?.user);
       setIsLoading(false);
     } catch (error) {
@@ -42,13 +41,19 @@ export default function Home() {
     getUserFromDb();
   }, [getUserFromDb]);
   useEffect(() => {
-    console.log("userInDB", userInDB);
     if (user.user?.email && user.user?.firstName && !isLoading) {
       toast.success(`Welcome ${user.user?.firstName}`);
-    } else if (!isLoading && !user.user?.email && userInDB) {
+    } else if (!isLoading && !user.user?.id && userInDB) {
       router.push("/login");
     }
-  }, [router, user.user?.email, user.user?.firstName, userInDB, isLoading]);
+  }, [
+    router,
+    user.user?.email,
+    user.user?.firstName,
+    userInDB,
+    isLoading,
+    user.user?.id,
+  ]);
 
   useEffect(() => {
     if (!userInDB && isLoading) {
