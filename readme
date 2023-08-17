@@ -1,0 +1,26 @@
+Docs for flutterwave: https://github.com/Flutterwave/React-v3
+
+CSS TO LOOK AT
+
+1. Perspective
+2. Filters : filter: blur(5px), opp: filter: none
+3. Blur
+4. Aspect ratio: i.e aspect-ratio: 16/9: no need for height, this makes the image very responsive
+5. Input: input:focus{outline: none}, ::placeholder, prop: caret-color: red
+6. not, is, where i.e .item :is(h1){color: red}, .class :not(elem, elem2){}
+7. .review:has(elem) .content{ filter: blur(20px)}
+
+Aspect ration 16/9 means 16(w) and 9(h) or 16by9
+
+<video controls src="./"> 
+<track kind="captions"/>
+</video>
+video {
+aspect-ratio: 16/9
+}
+
+// subtitle
+::cue{
+background: red;
+font-size: 40px
+}

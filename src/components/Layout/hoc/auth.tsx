@@ -2,13 +2,12 @@ const withAuthLayout = (Component: any, mode: "register" | "login") => {
   // eslint-disable-next-line react/display-name
   return (props: any) => {
     return (
-      <div className="py-6 mx-auto max-w-3xl">
-        <h1 className="text-center text-4xl font-bold">
-          {" "}
-          {mode === "login" ? "Login" : "Register"}{" "}
+      <div className="max-w-3xl py-6 mx-auto">
+        <h1 className="text-4xl font-bold text-center">
+          {mode === "login" ? "Login" : "Register"}
         </h1>
 
-        <div className="border m-6 p-10 rounded">
+        <div className="p-10 m-6 border rounded">
           <Component {...props} />
         </div>
       </div>

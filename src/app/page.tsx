@@ -44,9 +44,9 @@ export default function Home() {
 
   useEffect(() => {
     if (user.user?.email && user.user?.firstName) {
-      router.push("/login");
+      toast.success(user.user?.firstName);
     } else {
-      router.push("/register");
+      // router.push("/login");
     }
   }, [router, user.user?.email, user.user?.firstName]);
 
