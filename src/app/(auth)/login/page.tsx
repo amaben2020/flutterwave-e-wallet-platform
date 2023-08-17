@@ -34,6 +34,9 @@ const Login = () => {
           maxAge: 3600, // Expires after 1hr
           sameSite: true,
         });
+        if (typeof window !== "undefined") {
+          window.sessionStorage.setItem("user", JSON.stringify(user?.user));
+        }
         toast.success("Successfully logged in");
         router.push("/");
       }

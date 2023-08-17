@@ -4,9 +4,8 @@
 import useUserContext from "@/app/context/useUserContext";
 import withAuthLayout from "@/components/Layout/hoc/auth";
 import axios from "axios";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
 const ForgotPassword = () => {
@@ -23,27 +22,40 @@ const ForgotPassword = () => {
 
   const router = useRouter();
   const { user, setUser } = useUserContext();
+  const [userInApp, setUserInApp] = useState(null);
 
   const [cookie, setCookie] = useCookies(["user"]);
 
-  const forgotPasswordUser = async (e: any) => {
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const userInfo = window.sessionStorage.getItem(
+        "user",
+        JSON.stringify(user?.user),
+      );
+      console.log("userInformation", userInfo);
+      setUserInApp(JSON.parse(userInfo));
+    }
+  }, [user?.user]);
+
+  const updatePasswordAndRedirect = async (e: any) => {
     e.preventDefault();
     try {
-      if (emailRef.current && passwordRef.current) {
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/user/forgotPassword`,
+      if (passwordRef.current) {
+        const data = await axios.put(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/user/forgot-password?id=${userInApp?.id}`,
           {
-            email: emailRef?.current?.value,
             password: passwordRef?.current?.value,
           },
         );
-        setCookie("user", JSON.stringify(data), {
-          path: "/",
-          maxAge: 3600, // Expires after 1hr
-          sameSite: true,
-        });
-        toast.success("Successfully logged in");
-        router.push("/");
+
+        console.log("data", data);
+
+        if (
+          data.statusText === "Created" &&
+          data.data.message.includes("successfully")
+        ) {
+          router.push("/login");
+        }
       }
     } catch (error) {
       if (error instanceof Error) {
@@ -56,29 +68,15 @@ const ForgotPassword = () => {
 
   return (
     <>
-      <form onSubmit={forgotPasswordUser}>
+      <form onSubmit={updatePasswordAndRedirect}>
+        Hi, {user.user?.firstName ?? userInApp?.firstName} forgot your password?
         <div className="mb-6">
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Your email
-          </label>
-          <input
-            type="email"
-            value={user.email ?? null}
-            ref={emailRef}
-            id="email"
-            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 py-4"
-            placeholder="name@flowbite.com"
-            required
-          />
-        </div>
-
-        <div className="mb-6">
-          <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
-            Your password
+            Enter new password
           </label>
           <input
             ref={passwordRef}
-            value={user.password ?? null}
+            // value={userInApp.password ?? null}
             type="password"
             id="password"
             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500 py-4"
@@ -86,15 +84,12 @@ const ForgotPassword = () => {
             required
           />
         </div>
-
         <button
           type="submit"
           className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
         >
           Submit
         </button>
-
-        <Link href="/forgot-password"> Forgot Password?</Link>
       </form>
     </>
   );

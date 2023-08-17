@@ -28,6 +28,7 @@ export const GET = async (req: Request, { params: { userId } }: any) => {
         id: userId,
       },
     });
+
     if (user) {
       return NextResponse.json({ message: "Success", user }, { status: 200 });
     }
