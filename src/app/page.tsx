@@ -9,6 +9,7 @@ import Card from "./components/cards";
 import LottieControl from "./components/loading";
 import Navbar from "./components/navbar";
 import Sidebar from "./components/sidebar";
+import Table from "./components/table";
 import useUserContext from "./context/useUserContext";
 import styles from "./page.module.css";
 const inter = Inter({ subsets: ["latin"] });
@@ -157,7 +158,12 @@ export default function Home() {
             />
           </div>
           <div>Chart</div>
-          <div>Transaction</div>
+          <div>
+            <h2>Transactions</h2>
+
+            <Table />
+          </div>
+
           {isLoading ? <LottieControl /> : user.user?.email}
 
           <button
