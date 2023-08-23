@@ -2,7 +2,14 @@
 
 import { PrismaClient } from "@prisma/client";
 
-const prisma = new PrismaClient();
+// const prisma = new PrismaClient();
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: process.env.DATABASE_URL,
+    },
+  },
+});
 
 export const createWalletTransaction = async (
   userId: string,
@@ -11,7 +18,7 @@ export const createWalletTransaction = async (
   paymentGateway: "flutterwave",
   currency: any,
 ) => {
-  console.log("USER ID", userId);
+  // console.log("USER ID", userId);
   try {
     const wallet = await prisma.walletTransaction.create({
       data: {
@@ -25,6 +32,6 @@ export const createWalletTransaction = async (
     console.log("Create transaction wallet ✅", wallet);
     return wallet;
   } catch (error) {
-    console.log("❌", error);
+    console.log("❌ Error in createWallet", error);
   }
 };

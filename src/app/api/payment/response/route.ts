@@ -4,6 +4,7 @@ import { NextResponse } from "next/server";
 
 import { PrismaClient } from "@prisma/client";
 import { createWalletTransaction } from "../helpers/createWalletTransaction";
+import { createTransaction } from "../helpers/transaction";
 import { validateAndCreateWallet } from "../helpers/validateAndCreateWallet";
 
 const prisma = new PrismaClient({
@@ -25,6 +26,7 @@ async function connectPrisma() {
 
 export const POST = async (req: Request, res: NextResponse) => {
   try {
+    await connectPrisma();
     const data = await req.json();
     const getUserId = await prisma.user.findFirst({
       where: {
@@ -33,8 +35,30 @@ export const POST = async (req: Request, res: NextResponse) => {
     });
 
     if (!getUserId.id) {
-      throw new Error("No id for this user");
+      throw new Error("No id for this user ❌");
     }
+
+    console.log("data", data);
+
+    if (!data) {
+      throw new Error("No data for this transaction ❌");
+    }
+
+    const transactionDetails = {
+      // userId: getUserId?.id,
+      amount: data?.amount,
+      paymentGateway: data?.flw_ref.includes("FLW") && "flutterwave",
+      currency: data?.currency,
+      // name: data?.customer?.name,
+      email: data?.customer?.email,
+      paymentStatus: data?.charge_response_message.includes("Successful")
+        ? "successful"
+        : "failed",
+    };
+
+    const transaction = await createTransaction(transactionDetails);
+
+    console.log("transaction ✅", transaction);
 
     const wallet = await validateAndCreateWallet(getUserId.id, {
       amount: data?.amount,
@@ -42,22 +66,34 @@ export const POST = async (req: Request, res: NextResponse) => {
 
     console.log("wallet", wallet);
 
-    await createWalletTransaction(
-      getUserId.id,
+    const walletTransaction = await createWalletTransaction(
+      getUserId?.id,
       data?.amount,
-      data.charge_response_message.includes("Successful"),
-      data.flw_ref && "flutterwave",
-      data.currency,
+      data?.charge_response_message.includes("Successful"),
+      data?.flw_ref && "flutterwave",
+      data?.currency,
     );
+
+    console.log("walletTransaction", walletTransaction);
+
+    if (transaction) {
+      return NextResponse.json(
+        { message: "Transaction created ✅", transaction },
+        { status: 201 },
+      );
+    }
 
     if (wallet) {
       return NextResponse.json(
         { message: "Wallet created ✅", wallet },
-        { status: 200 },
+        { status: 201 },
       );
     }
   } catch (error) {
-    return NextResponse.json({ message: "Error ❌", error }, { status: 500 });
+    console.log(error);
+    if (error instanceof Error) {
+      return NextResponse.json({ message: "Error ❌", error }, { status: 500 });
+    }
   } finally {
     // disconnect when all is said and done
     await prisma.$disconnect();

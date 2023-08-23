@@ -17,6 +17,7 @@ const inter = Inter({ subsets: ["latin"] });
 export default function Home() {
   const { user, setUser } = useUserContext();
   const [userInDB, setUserInDB] = useState(null);
+  const [userTransactions, setUserTransactions] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [balance, setBalance] = useState(0);
   const [isActive, setIsActive] = useState(true);
@@ -24,9 +25,7 @@ export default function Home() {
   const getUserFromDb = useCallback(async () => {
     try {
       setIsLoading(true);
-      const { data } = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/user/${user.user?.id}`,
-      );
+      const { data } = await axios.get(`/api/user/${user.user?.id}`);
       setUserInDB(data?.user);
       setIsLoading(false);
     } catch (error) {
@@ -38,6 +37,23 @@ export default function Home() {
     }
   }, [user.user?.id]);
 
+  const getUserTransactions = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      const { data } = await axios.get(
+        `/api/payment/transaction?email=${user.user?.email}`,
+      );
+      setUserTransactions(data.transaction);
+      setIsLoading(false);
+    } catch (error) {
+      if (error instanceof Error) {
+        console.log(error.message);
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user.user?.email]);
+
   useEffect(() => {
     if (!user.user?.id) {
       router.push("/login");
@@ -46,7 +62,8 @@ export default function Home() {
 
   useEffect(() => {
     getUserFromDb();
-  }, [getUserFromDb]);
+    getUserTransactions();
+  }, [getUserFromDb, getUserTransactions]);
   useEffect(() => {
     if (user.user?.email && user.user?.firstName && !isLoading) {
       toast.success(`Welcome ${user.user?.firstName}`);
@@ -93,16 +110,14 @@ export default function Home() {
   };
 
   const handleFlutterPayment = useFlutterwave(config);
+  console.log("userTransactions", userTransactions);
 
   const handleIsActiveCard = () =>
     setIsActive((previousState) => !previousState);
 
   const handleResponse = async (response: any) => {
     try {
-      const wallet = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/response`,
-        response,
-      );
+      const wallet = await axios.post(`/api/payment/response`, response);
       console.log("Wallet", wallet);
       if (wallet.data.status === 200 && wallet.data.wallet) {
         toast.success(wallet.data.message);
@@ -161,7 +176,9 @@ export default function Home() {
           <div>
             <h2>Transactions</h2>
 
-            <Table />
+            {userTransactions && (
+              <Table transactions={userTransactions || []} />
+            )}
           </div>
 
           {isLoading ? <LottieControl /> : user.user?.email}

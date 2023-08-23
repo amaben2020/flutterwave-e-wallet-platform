@@ -67,13 +67,13 @@ model WalletTransaction {
 
 model Transaction {
   id             String         @id @default(auto()) @map("_id") @db.ObjectId
-  userId         String         @unique @db.ObjectId
-  name           String
-  email          String         @unique
-  phone          Int
+  // userId         String?         @unique @db.ObjectId
+  // name           String
+  email          String         
+  // phone          Int?
   amount         Int
   currency       Currency       @default(NGN)
-  paymentStatus  PaymentStatus  @default(pending)
+  paymentStatus  PaymentStatus?  @default(pending)
   paymentGateway PaymentGateway @default(flutterwave)
   createdAt      DateTime       @default(now())
 }

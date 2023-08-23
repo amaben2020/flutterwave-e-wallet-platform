@@ -25,3 +25,10 @@ aspect-ratio: 16/9
 background: red;
 font-size: 40px
 }
+
+adding or modifying table
+
+npx prisma generate
+npx prisma db push
+
+npx prisma studio

@@ -1,0 +1,21 @@
+// DATA {
+// status: 'successful',
+// customer: { name: 'Benneth Bej', email: 'tsest@gmail.com' },
+// transaction_id: 4546957,
+// tx_ref: '1692729542197',
+// flw_ref: 'FLW-MOCK-9c8ce1db9413ff05ee01501af809bca1',
+// currency: 'NGN',
+// amount: 1000,
+// charged_amount: 1000,
+// charge_response_code: '00',
+// charge_response_message: 'Approved. Successful',
+// created_at: '2023-08-22T18:39:30.000Z'
+// }
+
+// wallet {
+// id: '64d94b014214523774c0a1b0',
+// balance: 1000,
+// createdAt: 2023-08-13T21:28:31.319Z,
+// updatedAt: 2023-08-19T10:30:51.384Z,
+// userId: '64d7ed2dcc778405c8549fbf'
+// }
