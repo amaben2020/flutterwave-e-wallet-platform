@@ -33,7 +33,8 @@ const SessionPage = () => {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setUser(JSON.parse(window?.sessionStorage?.getItem("user")).user);
+      //@ts-ignore
+      setUser(JSON.parse(window?.sessionStorage?.getItem("user"))?.user);
     }
   }, []);
   return (
