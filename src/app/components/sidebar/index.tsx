@@ -1,8 +1,11 @@
+import useUserContext from "@/app/context/useUserContext";
 import Link from "next/link";
 import LinkIcon from "./links";
 import styles from "./style.module.css";
+import UserInfo from "./user-info";
 
 const Sidebar = () => {
+  const { user, setUser } = useUserContext();
   return (
     <div className={styles.sidebar}>
       <div className="flex items-center gap-3 p-8">
@@ -103,6 +106,7 @@ const Sidebar = () => {
             Analytics
           </Link>
         </div>
+        <UserInfo name={user.user?.firstName || ""} />
       </div>
     </div>
   );

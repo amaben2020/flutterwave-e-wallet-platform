@@ -55,10 +55,10 @@ export default function Home() {
   }, [user.user?.email]);
 
   useEffect(() => {
-    if (!user.user?.id) {
+    if (!user.user?.id && !isLoading) {
       router.push("/login");
     }
-  }, [user.user?.id, router]);
+  }, [user.user?.id, router, isLoading]);
 
   useEffect(() => {
     getUserFromDb();
@@ -68,7 +68,9 @@ export default function Home() {
     if (user.user?.email && user.user?.firstName && !isLoading) {
       toast.success(`Welcome ${user.user?.firstName}`);
     } else if (!isLoading && !user.user?.id && userInDB) {
-      router.push("/login");
+      setTimeout(() => {
+        router.push("/login");
+      }, 200);
     }
   }, [
     router,
