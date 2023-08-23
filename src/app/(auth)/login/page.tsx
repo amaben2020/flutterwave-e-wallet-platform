@@ -6,7 +6,7 @@ import withAuthLayout from "@/components/Layout/hoc/auth";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
 const Login = () => {
@@ -18,12 +18,12 @@ const Login = () => {
 
   const [cookie, setCookie] = useCookies(["user"]);
 
-  useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-  }, [router, user]);
-  console.log("USER", user);
+  // useEffect(() => {
+  //   if (user) {
+  //     router.push("/");
+  //   }
+  // }, [router, user]);
+  // console.log("USER", user);
 
   const loginUser = async (e: any) => {
     e.preventDefault();
