@@ -13,7 +13,7 @@ async function connectPrisma() {
   }
 }
 
-export const PUT = async (req: Response, res: NextResponse) => {
+export const PUT = async (req: any, res: NextResponse) => {
   connectPrisma();
 
   const body = await req.json();
