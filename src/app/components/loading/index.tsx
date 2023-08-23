@@ -1,5 +1,5 @@
+import Lottie from "lottie-react";
 import React from "react";
-import Lottie from "react-lottie";
 import * as animationData from "./../../../../assets/loading.json";
 
 export default class LottieControl extends React.Component {
@@ -26,7 +26,8 @@ export default class LottieControl extends React.Component {
     return (
       <div className="absolute transform -translate-x-1/2 -translate-y-1/2 top-1/2 left-1/2">
         <Lottie
-          options={defaultOptions}
+          animationData={animationData}
+          loop={true}
           height={200}
           width={400}
           // isStopped={this.state.isStopped}
