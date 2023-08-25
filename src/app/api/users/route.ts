@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../prisma/index";
 
-const prisma = new PrismaClient();
 async function connectPrisma() {
   try {
     await prisma.$connect();

@@ -1,14 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
-});
+import { prisma } from "../../../../../prisma/index";
 
 async function main() {
   try {
