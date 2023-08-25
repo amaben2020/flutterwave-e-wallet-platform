@@ -35,7 +35,7 @@ const Register = () => {
         firstNameRef.current &&
         lastNameRef.current
       ) {
-        const data = await fetch(`http://localhost:3000/api/user/register`, {
+        const data = await fetch(`/api/user/register`, {
           method: "POST",
           body: JSON.stringify({
             email: emailRef.current?.value,
