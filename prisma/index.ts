@@ -9,7 +9,8 @@ export const prisma =
     log: ["query", "error", "info", "warn"],
     datasources: {
       db: {
-        url: process.env.DATABASE_URL,
+        // url: String(process.env.DATABASE_URL),
+        url: "mongodb+srv://algomachine:VYSjg9bC3Ce8fNbZ@cluster0.llk3v.mongodb.net/e-wallet?retryWrites=true&w=majority",
       },
     },
   });
