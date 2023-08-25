@@ -7,12 +7,12 @@ export const prisma =
   globalForPrisma.prisma ||
   new PrismaClient({
     log: ["query", "error", "info", "warn"],
-    datasources: {
-      db: {
-        // url: String(process.env.DATABASE_URL),
-        url: "mongodb+srv://algomachine:VYSjg9bC3Ce8fNbZ@cluster0.llk3v.mongodb.net/e-wallet?retryWrites=true&w=majority",
-      },
-    },
+
+    // datasources: {
+    //   db: {
+    //     url: String(process.env.DATABASE_URL),
+    //   },
+    // },
   });
 
 console.log("process.env.DATABASE_URL", process.env.DATABASE_URL);
