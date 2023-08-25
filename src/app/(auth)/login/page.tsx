@@ -29,13 +29,10 @@ const Login = () => {
     e.preventDefault();
     try {
       if (emailRef.current && passwordRef.current) {
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/user/login`,
-          {
-            email: emailRef?.current?.value,
-            password: passwordRef?.current?.value,
-          },
-        );
+        const { data } = await axios.post(`/api/user/login`, {
+          email: emailRef?.current?.value,
+          password: passwordRef?.current?.value,
+        });
         setCookie("user", JSON.stringify(data), {
           path: "/",
           maxAge: 3600, // Expires after 1hr
