@@ -1,6 +1,6 @@
 const withAuthLayout = (
   Component: any,
-  mode: "register" | "login" | "forgot-password",
+  mode: "register" | "login" | "forgot-password" | "setting",
 ) => {
   // eslint-disable-next-line react/display-name
   return (props: any) => {

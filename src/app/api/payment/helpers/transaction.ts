@@ -1,8 +1,7 @@
 // There to keep inventory of a user's  transaction(s)
 
-import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../../prisma/index";
 
-const prisma = new PrismaClient();
 type TPaymentStatus = "pending" | "successful" | "failed";
 
 interface ITransactionDetails {

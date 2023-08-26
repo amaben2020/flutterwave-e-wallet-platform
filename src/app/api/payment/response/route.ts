@@ -2,18 +2,11 @@
 
 import { NextResponse } from "next/server";
 
-import { PrismaClient } from "@prisma/client";
+// import { PrismaClient } from "@prisma/client";
+import { prisma } from "../../../../../prisma/index";
 import { createWalletTransaction } from "../helpers/createWalletTransaction";
 import { createTransaction } from "../helpers/transaction";
 import { validateAndCreateWallet } from "../helpers/validateAndCreateWallet";
-
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: process.env.DATABASE_URL,
-    },
-  },
-});
 
 async function connectPrisma() {
   try {

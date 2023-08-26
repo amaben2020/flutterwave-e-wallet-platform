@@ -114,6 +114,15 @@ export default function Home() {
   const handleFlutterPayment = useFlutterwave(config);
   console.log("userTransactions", userTransactions);
 
+  const totalTransactions = userTransactions.reduce(
+    (acc, cv: Record<string, string | number>) => {
+      if (typeof cv.amount === "number") acc += cv.amount;
+
+      return acc;
+    },
+    0,
+  );
+
   const handleIsActiveCard = () =>
     setIsActive((previousState) => !previousState);
 
@@ -163,7 +172,8 @@ export default function Home() {
               isLoading={isLoading}
             />
             <Card
-              balance={balance}
+              transaction
+              balance={totalTransactions}
               handleClick={handleIsActiveCard}
               isActive={false}
               isLoading={isLoading}

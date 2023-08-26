@@ -3,15 +3,22 @@ const Card = ({
   isActive,
   handleClick,
   balance,
-  isLoading
+  isLoading,
+  transaction,
 }: {
   isActive: boolean;
   handleClick: () => void;
-    balance: number;
-    isLoading: boolean
+  balance: number;
+  isLoading: boolean;
+  transaction?: boolean;
 }) => {
   return (
-    <div className={styles.card} data-active={isActive} data-isLoading={String(isLoading)} onClick={handleClick}>
+    <div
+      className={styles.card}
+      data-active={isActive}
+      data-isLoading={String(isLoading)}
+      onClick={handleClick}
+    >
       <div className="flex justify-between">
         <div className={styles.iconWrapper}>
           <svg
@@ -57,7 +64,7 @@ const Card = ({
         </svg>
       </div>
       <h3 className={styles.description} data-active={isActive}>
-        Total Balance
+        Total {transaction ? "Transactions" : "Balance"}
       </h3>
       <h3 className={styles.amount} data-active={isActive}>
         ₦{Number(balance).toFixed(2) || 0.0}

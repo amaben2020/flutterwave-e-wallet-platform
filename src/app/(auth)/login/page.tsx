@@ -6,7 +6,7 @@ import withAuthLayout from "@/components/Layout/hoc/auth";
 import axios from "axios";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useRef } from "react";
+import { useRef } from "react";
 import { useCookies } from "react-cookie";
 import { toast } from "react-toastify";
 const Login = () => {
@@ -18,24 +18,21 @@ const Login = () => {
 
   const [cookie, setCookie] = useCookies(["user"]);
 
-  useEffect(() => {
-    if (user) {
-      router.push("/");
-    }
-  }, [router, user]);
-  console.log("USER", user);
+  // useEffect(() => {
+  //   if (user) {
+  //     router.push("/");
+  //   }
+  // }, [router, user]);
+  // console.log("USER", user);
 
   const loginUser = async (e: any) => {
     e.preventDefault();
     try {
       if (emailRef.current && passwordRef.current) {
-        const { data } = await axios.post(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/user/login`,
-          {
-            email: emailRef?.current?.value,
-            password: passwordRef?.current?.value,
-          },
-        );
+        const { data } = await axios.post(`/api/user/login`, {
+          email: emailRef?.current?.value,
+          password: passwordRef?.current?.value,
+        });
         setCookie("user", JSON.stringify(data), {
           path: "/",
           maxAge: 3600, // Expires after 1hr
