@@ -106,7 +106,9 @@ const Sidebar = () => {
             Analytics
           </Link>
         </div>
-        <UserInfo name={user.user?.firstName || ""} />
+        <Link href="/setting/user">
+          <UserInfo name={user.user?.firstName || ""} />
+        </Link>
       </div>
     </div>
   );
