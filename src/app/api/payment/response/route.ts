@@ -21,6 +21,8 @@ export const POST = async (req: Request, res: NextResponse) => {
   try {
     await connectPrisma();
     const data = await req.json();
+
+    console.log("DATA RESP", data);
     const getUserId = await prisma.user.findFirst({
       where: {
         email: data.customer?.email,
