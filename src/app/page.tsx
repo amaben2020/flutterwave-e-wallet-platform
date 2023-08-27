@@ -111,6 +111,16 @@ export default function Home() {
     },
   };
 
+  const handleFetchWallet = async () => {
+    try {
+      const data = await axios.get(
+        `/api/payment/wallet?userId=${user.user?.id}`,
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const handleFlutterPayment = useFlutterwave(config);
   console.log("userTransactions", userTransactions);
 
@@ -142,7 +152,7 @@ export default function Home() {
   const handleBalanceFetch = useCallback(async () => {
     try {
       const data = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/wallet?userId=${user?.user?.id}`,
+        `/api/payment/wallet?userId=${user?.user?.id}`,
       );
 
       setBalance(data.data.wallet.balance);
@@ -154,7 +164,7 @@ export default function Home() {
   useEffect(() => {
     handleBalanceFetch();
   }, [handleBalanceFetch]);
-
+  console.trace();
   return (
     <div className="flex">
       <div>

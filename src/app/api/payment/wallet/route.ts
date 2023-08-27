@@ -1,14 +1,7 @@
 import { NextResponse } from "next/server";
 
-// import { PrismaClient } from "@prisma/client";
 import { prisma } from "../../../../../prisma/index";
-// const prisma = new PrismaClient({
-//   datasources: {
-//     db: {
-//       url: process.env.DATABASE_URL,
-//     },
-//   },
-// });
+import { createWallet } from "../helpers/createWallet";
 
 async function connectPrisma() {
   try {
@@ -19,12 +12,23 @@ async function connectPrisma() {
   }
 }
 
+export const POST = async (req: Request, res: NextResponse) => {
+  try {
+    const { amount, userId } = await req.json();
+
+    const data = await createWallet(userId, amount);
+    console.log("data", data);
+
+    NextResponse.json({ wallet: data });
+  } catch (error) {
+    console.log(error);
+  }
+};
+
 export const GET = async (req: Request, res: NextResponse) => {
   const url = new URL(req.url);
 
   const userId = url.searchParams.get("userId") ?? "";
-
-  console.log("USER ID", userId);
 
   try {
     const wallet = await prisma.wallet.findFirst({

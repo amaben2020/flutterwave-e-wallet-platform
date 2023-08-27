@@ -67,8 +67,6 @@ export const POST = async (req: Request, res: NextResponse) => {
       data?.currency,
     );
 
-    console.log("walletTransaction", walletTransaction);
-
     if (transaction) {
       return NextResponse.json(
         { message: "Transaction created ✅", transaction },
