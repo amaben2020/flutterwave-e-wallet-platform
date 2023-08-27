@@ -92,11 +92,14 @@ export default function Home() {
       console.log("PUSH TO REGISTER ✅ ");
     }
   }, [userInDB, router, isLoading]);
+  const [selectedProduct, setSelectedProduct] = useState({ price: 0 });
+
+  console.log("selectedProduct?.price", selectedProduct?.price);
 
   const config = {
     public_key: process.env.NEXT_PUBLIC_FLW_PUBLIC_KEY ?? "",
     tx_ref: String(Date.now()),
-    amount: 1000,
+    amount: selectedProduct?.price,
     currency: "NGN",
     payment_options: "card,mobilemoney,ussd",
     customer: {
@@ -109,6 +112,16 @@ export default function Home() {
       description: "Payment for items in cart",
       logo: "https://st2.depositphotos.com/4403291/7418/v/450/depositphotos_74189661-stock-illustration-online-shop-log.jpg",
     },
+  };
+
+  const handleFetchWallet = async () => {
+    try {
+      const data = await axios.get(
+        `/api/payment/wallet?userId=${user.user?.id}`,
+      );
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleFlutterPayment = useFlutterwave(config);
@@ -135,13 +148,14 @@ export default function Home() {
       }
     } catch (error) {
       console.log(error);
+      console.log("added");
     }
   };
 
   const handleBalanceFetch = useCallback(async () => {
     try {
       const data = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/payment/wallet?userId=${user?.user?.id}`,
+        `/api/payment/wallet?userId=${user?.user?.id}`,
       );
 
       setBalance(data.data.wallet.balance);
@@ -153,6 +167,19 @@ export default function Home() {
   useEffect(() => {
     handleBalanceFetch();
   }, [handleBalanceFetch]);
+
+  const [products, setProducts] = useState([
+    { id: 1, name: "Keyboard", price: 4440, category: "Accessories" },
+    { id: 2, name: "Mouse", price: 25550, category: "Accessories" },
+    { id: 3, name: "Monitor", price: 399, category: "Accessories" },
+    { id: 4, name: "Dell XPS", price: 599, category: "Laptop" },
+    { id: 5, name: "MacBook Pro", price: 899, category: "Laptop" },
+    { id: 6, name: "Pencil Box", price: 6222, category: "Stationary" },
+    { id: 7, name: "Pen", price: 20000, category: "Stationary" },
+    { id: 8, name: "USB Cable", price: 7, category: "Accessories" },
+    { id: 9, name: "Eraser", price: 20000, category: "Stationary" },
+    { id: 10, name: "Highlighter", price: 500000, category: "Stationary" },
+  ]);
 
   return (
     <div className="flex">
@@ -194,24 +221,37 @@ export default function Home() {
           </div>
 
           {isLoading ? <LottieControl /> : user.user?.email}
+          <div className="flex flex-wrap gap-6">
+            {products.map((p) => {
+              return (
+                <div className="p-6 border" key={p.id}>
+                  {p.name}
+                  {p.category}
+                  {p.price}
 
-          <button
-            className="p-3 mx-10 text-white bg-green-600 border"
-            onClick={() => {
-              handleFlutterPayment({
-                callback: async (response) => {
-                  console.log(response);
-                  await handleResponse(response);
-                  closePaymentModal();
-                },
-                onClose: () => {
-                  toast.warning("Payment Complete");
-                },
-              });
-            }}
-          >
-            Payment with React hooks
-          </button>
+                  <button
+                    className="p-3 mx-10 text-white bg-green-600 border"
+                    onClick={() => {
+                      setSelectedProduct({ price: p.price });
+                      if (selectedProduct.price > 0) {
+                        handleFlutterPayment({
+                          callback: async (response) => {
+                            await handleResponse(response);
+                            closePaymentModal();
+                          },
+                          onClose: () => {
+                            toast.warning("Payment Complete");
+                          },
+                        });
+                      }
+                    }}
+                  >
+                    Pay
+                  </button>
+                </div>
+              );
+            })}
+          </div>
         </div>
       </main>
     </div>

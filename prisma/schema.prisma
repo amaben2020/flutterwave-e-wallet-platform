@@ -51,7 +51,7 @@ model Wallet {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   userId    String   @unique @db.ObjectId
-  user      User     @relation(fields: [userId], references: [id])
+  user      User?     @relation(fields: [userId], references: [id])
 }
 
 model WalletTransaction {
@@ -61,7 +61,7 @@ model WalletTransaction {
   paymentGateway PaymentGateway @default(flutterwave)
   createdAt      DateTime       @default(now())
   userId         String         @unique @db.ObjectId
-  user           User           @relation(fields: [userId], references: [id])
+  user           User?           @relation(fields: [userId], references: [id])
   currency       Currency       @default(NGN)
 }
 
