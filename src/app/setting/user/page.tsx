@@ -31,16 +31,30 @@ const UserSetting = () => {
     }
   }, [user?.id]);
 
-  console.log("userDetails", userDetails);
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      const info = JSON.parse(window?.sessionStorage.getItem("user") || "");
-      setUser(info);
+    if (!U.user?.id) {
+      router.push("/login");
+    }
+  }, [U, router]);
+
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      window?.sessionStorage?.getItem("user") !== "undefined"
+    ) {
+      const info =
+        JSON.parse(window?.sessionStorage?.getItem("user") ?? "") || {};
+      console.log(
+        `window?.sessionStorage?.getItem("user")`,
+        window?.sessionStorage?.getItem("user"),
+      );
+      if (info) {
+        setUser(info);
+      }
     }
     getUserDetails();
   }, [getUserDetails]);
 
-  console.log(userDetails);
   const handleUpdate = async (e: any) => {
     e.preventDefault();
     try {
